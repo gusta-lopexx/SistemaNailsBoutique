@@ -24,7 +24,7 @@ class AgendamentosTable
                 ->sortable()
                 ->toggleable(),
 
-            TextColumn::make('servico.nome')
+            TextColumn::make('servicos.nome')
                 ->label('Serviço')
                 ->sortable()
                 ->toggleable(),
@@ -39,6 +39,16 @@ class AgendamentosTable
                 ->label('Hora')
                 ->sortable()
                 ->toggleable(),
+            
+            TextColumn::make('sessao_atual')
+                ->label('Sessão')
+                ->formatStateUsing(fn ($record) =>
+                    $record->is_sessao
+                        ? "{$record->sessao_atual} / {$record->total_sessoes}"
+                        : '-'
+                )
+                ->toggleable(),
+
 
             TextColumn::make('valor')
                 ->label('Valor')

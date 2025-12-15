@@ -75,6 +75,23 @@ class AgendamentoForm
                 ->visible(fn (callable $get) => $get('is_promocao') === true)
                 ->required(fn (callable $get) => $get('is_promocao') === true),
 
+            Toggle::make('is_sessao')
+                ->label('Faz parte de um pacote?')
+                ->inline(false)
+                ->reactive(),
+
+            TextInput::make('total_sessoes')
+                ->label('Total de sessões')
+                ->numeric()
+                ->minValue(1)
+                ->visible(fn ($get) => $get('is_sessao') === true),
+
+            TextInput::make('sessao_atual')
+                ->label('Sessão atual')
+                ->numeric()
+                ->minValue(1)
+                ->visible(fn ($get) => $get('is_sessao') === true),
+
             // Observações
             Textarea::make('observacoes')
                 ->label('Observações')

@@ -16,6 +16,9 @@ class Agendamento extends Model
         'promocao_id',
         'status',        
         'observacoes',
+        'is_sessao',
+        'total_sessoes',
+        'sessao_atual',
     ];
 
     public function cliente()
