@@ -11,6 +11,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use SebastianBergmann\CodeCoverage\Filter;
+use Filament\Tables\Columns\Summarizers\Sum;
+
 
 class AgendamentosTable
 {
@@ -53,7 +55,12 @@ class AgendamentosTable
             TextColumn::make('valor')
                 ->label('Valor')
                 ->money('BRL')
-                ->toggleable(),
+                ->toggleable()
+                ->summarize(
+                    Sum::make()
+                        ->label('Total')
+                        ->money('BRL')
+                ),
             
             TextColumn::make('status')
                 ->label('Status')
@@ -65,7 +72,7 @@ class AgendamentosTable
             ->badge()
             ->color(fn ($state) => match ($state) {
                 'agendado' => 'warning',
-                'confirmado' => 'success',
+                'confirmado' => 'info',
                 'concluido' => 'success',
                 'cancelado' => 'danger',
                 default => 'secondary',
@@ -97,6 +104,19 @@ class AgendamentosTable
                             $q->where('data', '<=', $date)
                         );
                 }),
+
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->multiple() // 👈 permite selecionar mais de um
+                    ->options([
+                        'agendado' => 'Agendado',
+                        'confirmado' => 'Confirmado',
+                        'concluido' => 'Concluído',
+                        'cancelado' => 'Cancelado',
+                    ])
+                    ->default(['agendado', 'confirmado']),              
+
+
             ])
             ->recordActions([
                 EditAction::make(),

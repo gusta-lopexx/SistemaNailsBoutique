@@ -41,9 +41,9 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 \App\Filament\Widgets\DashboardStats::class,
-                \App\Filament\Widgets\AtendimentosPorDiaChart::class,
-                \App\Filament\Widgets\ReceitaMensalChart::class,
                 \App\Filament\Widgets\ProximosAgendamentos::class,
+                \App\Filament\Widgets\AtendimentosPorDiaChart::class,
+                \App\Filament\Widgets\ReceitaMensalChart::class,                
                 \App\Filament\Widgets\RankingServicosChart::class,
             ])
             ->middleware([

@@ -11,7 +11,7 @@ use Carbon\Carbon;
 class ProximosAgendamentos extends TableWidget
 {
     protected static ?string $heading = 'Próximos Agendamentos';
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 0;
     protected int | string | array $columnSpan = 'full';
 
     public function table(Table $table): Table

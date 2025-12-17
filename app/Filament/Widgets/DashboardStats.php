@@ -21,7 +21,27 @@ class DashboardStats extends BaseWidget
         $atendimentosMes = Agendamento::whereMonth('data', $mesAtual)->count();
 
         // Valor total recebido no mês
-        $valorMes = Agendamento::whereMonth('data', $mesAtual)->sum('valor');
+        $valorMes = Agendamento::whereMonth('data', now()->month)
+            ->whereYear('data', now()->year)
+            ->where('status', 'concluido')
+            ->get()
+            ->sum(function ($agendamento) {
+
+                // 🟡 Sessões de combo: só a primeira gera valor
+                if ($agendamento->is_sessao && $agendamento->sessao_atual > 1) {
+                    return 0;
+                }
+
+                // 🟢 Promoção
+                if ($agendamento->promocao) {
+                    return (float) $agendamento->promocao->valor;
+                }
+
+                // 🔵 Valor normal do agendamento
+                return (float) $agendamento->valor;
+            });
+
+
 
         // Quantidade de clientes cadastrados
         $totalClientes = Cliente::count();
