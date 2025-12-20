@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Agendamentos\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -119,9 +120,22 @@ class AgendamentosTable
 
             ])
             ->recordActions([
+                Action::make('concluir')
+                    ->label('Concluir')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn ($record) => $record->status !== 'concluido')
+                    ->action(function ($record) {
+                        $record->update([
+                            'status' => 'concluido',
+                        ]);
+                    }),
+
                 EditAction::make(),
                 DeleteAction::make(),
             ])
+
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

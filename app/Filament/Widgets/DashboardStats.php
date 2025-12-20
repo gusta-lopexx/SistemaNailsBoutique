@@ -16,18 +16,22 @@ class DashboardStats extends BaseWidget
     {
         $hoje = Carbon::today();
         $mesAtual = Carbon::now()->month;
+        $anoAtual = Carbon::now()->year;
 
-        // Quantidade de atendimentos no mês
-        $atendimentosMes = Agendamento::whereMonth('data', $mesAtual)->count();
+        // 📌 Atendimentos no mês (não cancelados)
+        $atendimentosMes = Agendamento::whereMonth('data', $mesAtual)
+            ->whereYear('data', $anoAtual)
+            ->whereIn('status', ['agendado', 'confirmado', 'concluido'])
+            ->count();
 
-        // Valor total recebido no mês
-        $valorMes = Agendamento::whereMonth('data', now()->month)
-            ->whereYear('data', now()->year)
+        // 💰 Valor total recebido no mês (somente concluídos)
+        $valorMes = Agendamento::whereMonth('data', $mesAtual)
+            ->whereYear('data', $anoAtual)
             ->where('status', 'concluido')
             ->get()
             ->sum(function ($agendamento) {
 
-                // 🟡 Sessões de combo: só a primeira gera valor
+                // 🟡 Sessão de combo → só a primeira gera valor
                 if ($agendamento->is_sessao && $agendamento->sessao_atual > 1) {
                     return 0;
                 }
@@ -37,17 +41,17 @@ class DashboardStats extends BaseWidget
                     return (float) $agendamento->promocao->valor;
                 }
 
-                // 🔵 Valor normal do agendamento
+                // 🔵 Valor normal
                 return (float) $agendamento->valor;
             });
 
-
-
-        // Quantidade de clientes cadastrados
+        // 👥 Clientes cadastrados
         $totalClientes = Cliente::count();
 
-        // Quantidade de atendimentos hoje
-        $atendimentosHoje = Agendamento::whereDate('data', $hoje)->count();
+        // ⏰ Atendimentos hoje (sem cancelados)
+        $atendimentosHoje = Agendamento::whereDate('data', $hoje)
+            ->whereIn('status', ['agendado', 'confirmado', 'concluido'])
+            ->count();
 
         return [
             Stat::make('Atendimentos no mês', $atendimentosMes)
